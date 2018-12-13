@@ -28,3 +28,10 @@ p{
 	float: left;
 	text-align: left;
 }
+
+body {
+  -webkit-user-select: none;
+     -moz-user-select: -moz-none;
+      -ms-user-select: none;
+          user-select: none;
+}
