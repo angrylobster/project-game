@@ -5,6 +5,8 @@ var gameEnded = false;
 var keyMap=[], enemies=[], enemiesInPlay = [], powerUps = [];
 var playerChar, gameLoop, mousePosition, audio, audioIntro, audioMain;
 var frameNo = 0;
+var fps = 15;
+var then = Date.now();
 
 window.onload = function(){
     introScreen();
@@ -57,12 +59,13 @@ function getMousePosition(canvas, e){
 }
 
 function introScreen(){
-    context.font = "60px VT323";
-    context.fillStyle = "#FFFFFF";
+    context.font = "40px 'Press Start 2p'";
+    context.fillStyle = "#ffffb3";
     context.textAlign = "center";
     context.fillText("Zombie Killer", canvas.width/2, canvas.height/2);
-    context.font = "20px Arial";
-    context.fillText("Press Enter To Start", canvas.width/2, canvas.height/2 + 250);
+    context.fillStyle = "#ffb366";
+    context.font = "20px 'Press Start 2p'";
+    context.fillText("Press Enter To Start", canvas.width/2, canvas.height/2 + 150);
 }
 
 function startGame(){
@@ -105,7 +108,18 @@ function mainLoop(){
             audioGame.pause();
             lose();
         }
-        requestAnimationFrame(mainLoop);
+        animate();
+    }
+}
+
+function animate(){
+    requestAnimationFrame(animate);
+
+    let now = Date.now();
+    let elapsed = now - then;
+    if (elapsed > fps){
+        then = now - (elapsed % fps);
+        mainLoop();
     }
 }
 
@@ -123,8 +137,8 @@ function gameLost(){
 
 function gameEventText(text){
     context.clearRect(canvas.width/2-100, canvas.height/2+150, 200, 80)
-    context.font = "50px Playfair Display";
-    context.fillStyle = 'rgb(230,230,230)'; // or whatever color the background is.
+    context.font = "50px 'Press Start 2P'";
+    context.fillStyle = 'rgb(200,200,200)'; // or whatever color the background is.
     context.fillText(text, canvas.width/2, canvas.height/2 + 200);
 }
 
