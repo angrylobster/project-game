@@ -7,15 +7,9 @@ var playerChar, gameLoop, mousePosition, audio, audioIntro, audioMain;
 var frameNo = 0;
 
 window.onload = function(){
-    drawBackground();
     introScreen();
     addEventListeners();
     canvas.selection = false;
-}
-
-function drawBackground(){
-    context.fillStyle = "rgb(58,89,65)";
-    context.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 function addEventListeners(){
@@ -66,8 +60,7 @@ function introScreen(){
     context.font = "60px VT323";
     context.fillStyle = "#FFFFFF";
     context.textAlign = "center";
-    context.fillText("Kill Undead", canvas.width/2, canvas.height/2);
-    context.fillText("Things, OK?", canvas.width/2, canvas.height/2 + 75);
+    context.fillText("Zombie Killer", canvas.width/2, canvas.height/2);
     context.font = "20px Arial";
     context.fillText("Press Enter To Start", canvas.width/2, canvas.height/2 + 250);
 }
@@ -76,8 +69,7 @@ function startGame(){
     gameStarted = true;
     clearCanvas();
     generatePlayerAndEnemies();
-    let countdown = 3
-    drawBackground();
+    let countdown = 3;
     let countdownInterval = setInterval(function(){
         if (countdown === 0){
             clearInterval(countdownInterval)
@@ -87,7 +79,6 @@ function startGame(){
             audioGame.play();
             mainLoop();
         } else {
-            drawBackground();
             drawCharacters();
             gameEventText(countdown)
             countdown--
@@ -99,7 +90,6 @@ function mainLoop(){
     if (gameStarted){
         frameNo++;
         clearCanvas();
-        drawBackground();
         clearInactiveEnemiesAndBullets();
         putEnemiesInPlay();
         moveCharacters();
@@ -133,8 +123,7 @@ function gameLost(){
 
 function gameEventText(text){
     context.clearRect(canvas.width/2-100, canvas.height/2+150, 200, 80)
-    drawBackground();
-    context.font = "50px Railway";
+    context.font = "50px Playfair Display";
     context.fillStyle = 'rgb(230,230,230)'; // or whatever color the background is.
     context.fillText(text, canvas.width/2, canvas.height/2 + 200);
 }
@@ -205,9 +194,6 @@ function clearInactiveEnemiesAndBullets(){
 }
 
 function putEnemiesInPlay(){
-    // while (enemiesInPlay.length < 13 && enemies.length !== 0){
-    //     enemiesInPlay.push(enemies.splice(enemies.length-1, 1)[0]);
-    // }
     var enemiesToPush;
     if (enemiesInPlay.length === 0 && enemies.length > 0){
         enemiesToPush = enemies.splice(0,1)[0];
@@ -348,6 +334,7 @@ function generatePlayerChar(){
     playerCharObj.animationFrames = [];
     playerCharObj.animationFrames.push([24,0])
     playerCharObj.animationFrames.push([276,0])
+    playerCharObj.animationFrames.push([106,0])
     playerCharObj.move = function(){
         if (this.immuneFrames > 0){
             this.immuneFrames--;
@@ -359,10 +346,14 @@ function generatePlayerChar(){
     playerCharObj.draw = function(){
         context.save();
         context.translate(this.x, this.y);
-        if (frameNo % 100 < 50){
-            context.drawImage(this.image, this.animationFrames[0][0],this.animationFrames[0][1], 34,86,Math.floor(-this.width/2), Math.floor(-this.height/2), this.width, this.height);
+        if (this.immuneFrames !== 0 && frameNo % 5 === 0){
+            context.drawImage(this.image, this.animationFrames[2][0], this.animationFrames[2][1], 34, 86, Math.floor(-this.width/2), Math.floor(-this.height/2), this.width, this.height);
         } else {
-            context.drawImage(this.image, this.animationFrames[1][0],this.animationFrames[1][1], 34,86,Math.floor(-this.width/2), Math.floor(-this.height/2), this.width, this.height);
+            if (frameNo % 100 < 50){
+                context.drawImage(this.image, this.animationFrames[0][0],this.animationFrames[0][1], 34,86,Math.floor(-this.width/2), Math.floor(-this.height/2), this.width, this.height);
+            } else {
+                context.drawImage(this.image, this.animationFrames[1][0],this.animationFrames[1][1], 34,86,Math.floor(-this.width/2), Math.floor(-this.height/2), this.width, this.height);
+            }
         }
         context.restore();
     }
@@ -461,11 +452,11 @@ function generateMeleeEnemy(){
     meleeEnemy.hits = 2;
     meleeEnemy.width = 30;
     meleeEnemy.height = 45;
-    meleeEnemy.image.src = "images/zombie.png";
+    meleeEnemy.image.src = "images/zombie-alt.png";
     meleeEnemy.bullets = [];
     meleeEnemy.move = function(){
         if (this.hits === 1){
-            this.image.src = "images/zombie-damaged.png"
+            this.image.src = "images/zombie-damaged-alt.png"
         }
         if (frameNo % 30 > 4){
             if (this.randomizer > 0.5){
@@ -626,7 +617,7 @@ function determineSnipePosition(enemy){
 }
 
 function distanceFromPlayer(enemy){
-    console.log(enemy.x)
+    
 }
 
 function generatePowerUp(x, y){

@@ -6,7 +6,9 @@ body{
 }
 
 #game{
-	background: #ffffff;
+	background-image: url('images/grass.png');
+	background-color: rgba(0,0,0,0.45);
+	background-blend-mode: multiply;
 	position:relative;
 	margin: 0 auto;
 	border: 3px solid #D3D3D3;
