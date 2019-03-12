@@ -2,7 +2,7 @@ var canvas = document.getElementById('game');
 var context = canvas.getContext('2d');
 var gameStarted = false;
 var gameEnded = false;
-var keyMap=[], enemies=[], enemiesInPlay = [], powerUps = [];
+var keyMap=[], enemies=[], enemiesInPlay = [], powerUps = [], enemyBullets = [];
 var playerChar, gameLoop, mousePosition, audio, audioIntro, audioMain;
 var frameNo = 0;
 var then = Date.now();
@@ -111,17 +111,6 @@ function mainLoop(){
     }
 }
 
-// function animate(){
-//     requestAnimationFrame(animate);
-
-//     let now = Date.now();
-//     let elapsed = now - then;
-//     if (elapsed > fps){
-//         then = now - (elapsed % fps);
-//         mainLoop();
-//     }
-// }
-
 function gameWon(){
     if (enemiesInPlay.length === 0 && enemies.length ===0){
         return true;
@@ -181,10 +170,8 @@ function allBulletsDo(functionName){
     for (let bullet of playerChar.bullets){
         bullet[functionName]();
     }
-    for (let enemy of enemiesInPlay){
-        for (let enemyBullet of enemy.bullets){
-            enemyBullet[functionName]();
-        }
+    for (let bullet of enemyBullets){
+        bullet[functionName]();
     }
 }
 
@@ -199,11 +186,9 @@ function clearInactiveEnemiesAndBullets(){
     enemiesInPlay = enemiesInPlay.filter(function(enemy){
         return enemy.active;
     });
-    for (let enemy of enemiesInPlay){
-        enemy.bullets = enemy.bullets.filter(function(bullet){
+        enemyBullets = enemyBullets.filter(bullet => {
             return bullet.active;
         });
-    }
 }
 
 function putEnemiesInPlay(){
@@ -233,7 +218,7 @@ function checkCollisions(){
                 enemyHit(enemy);
             }
         }
-        for (let enemyBullet of enemy.bullets){
+        for (let enemyBullet of enemyBullets){
             if (playerChar.collided(enemyBullet)){
                 enemyBullet.active = false;
                 playerChar.checkHit();
@@ -531,7 +516,6 @@ function generateRangedEnemy(){
     rangedEnemy.image.src = "images/skeleton.png";
     rangedEnemy.shotImage = new Image();
     rangedEnemy.shotImage.src = "images/bone.png"
-    rangedEnemy.bullets = [];
     rangedEnemy.move = function(){
         if (frameNo - this.lastShot > this.shotCooldown){
             this.shoot();
@@ -561,7 +545,7 @@ function generateRangedEnemy(){
     }
 
     rangedEnemy.shoot = function(){
-        this.bullets.push(enemyShoot(this, playerChar.x, playerChar.y));
+        enemyBullets.push(enemyShoot(this, playerChar.x, playerChar.y));
         this.lastShot = frameNo;
     }
     return rangedEnemy;
