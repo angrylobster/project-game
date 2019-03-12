@@ -5,7 +5,6 @@ var gameEnded = false;
 var keyMap=[], enemies=[], enemiesInPlay = [], powerUps = [];
 var playerChar, gameLoop, mousePosition, audio, audioIntro, audioMain;
 var frameNo = 0;
-var fps = 15;
 var then = Date.now();
 
 window.onload = function(){
@@ -108,20 +107,20 @@ function mainLoop(){
             audioGame.pause();
             lose();
         }
-        animate();
+        requestAnimationFrame(mainLoop);
     }
 }
 
-function animate(){
-    requestAnimationFrame(animate);
+// function animate(){
+//     requestAnimationFrame(animate);
 
-    let now = Date.now();
-    let elapsed = now - then;
-    if (elapsed > fps){
-        then = now - (elapsed % fps);
-        mainLoop();
-    }
-}
+//     let now = Date.now();
+//     let elapsed = now - then;
+//     if (elapsed > fps){
+//         then = now - (elapsed % fps);
+//         mainLoop();
+//     }
+// }
 
 function gameWon(){
     if (enemiesInPlay.length === 0 && enemies.length ===0){
